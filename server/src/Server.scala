@@ -75,7 +75,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
         broadcast(Protocol.Left(name, members.keys.toSeq))
     }
 
-    private def broadcast(msg: Protocol.Message) {
+    private def broadcast(msg: Protocol.Message): Unit = {
       val e = cask.Ws.Text(write(msg))
       members.values.foreach(_.send(e))
     }

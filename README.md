@@ -7,5 +7,5 @@ Now using:
 - [Scala.js](https://www.scala-js.org) example client with [shared](build.sc) code between [server](server/src/Server.scala) and [client](js/src/MainJs.scala).
 - Vuejs gui with vue cli integrated in mill build
 
-
+Currently needs initial `npm install` in vuegui folder.
 Set up for development, use: `mill -w server.runBackground`

@@ -33,7 +33,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
   }
 
   @cask.staticFiles("/htm")
-  def staticFileRoutes() = "server/resources/wwwroot/"
+  def staticFileRoutes() = "../vuegui/dist/"
 
   @cask.websocket("/connect/:userName")
   def connect(userName: String): cask.WebsocketResult = {

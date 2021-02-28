@@ -9,17 +9,19 @@ import shared.Protocol
 
 @JSExportTopLevel("MainScalaJs")
 object MainScalaJs {
-
-  val joinButton = dom.document.getElementById("join").asInstanceOf[HTMLButtonElement]
-val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElement]
-
   @JSExport
   def start(): Unit = {
-    val nameField = dom.document.getElementById("name").asInstanceOf[HTMLInputElement]
+    val sendButton =
+      dom.document.getElementById("send").asInstanceOf[HTMLButtonElement]
+    val joinButton =
+      dom.document.getElementById("join").asInstanceOf[HTMLButtonElement]
+    val nameField =
+      dom.document.getElementById("name").asInstanceOf[HTMLInputElement]
     joinButton.onclick = { (event: MouseEvent) =>
-      joinChat(nameField.value)
+      joinChat(nameField.value, joinButton, sendButton)
       event.preventDefault()
     }
+
     nameField.focus()
     nameField.onkeypress = { (event: KeyboardEvent) =>
       if (event.keyCode == 13) {
@@ -29,16 +31,20 @@ val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElem
     }
   }
 
-  def joinChat(name: String): Unit = {
+  def joinChat(name: String, joinButton: HTMLButtonElement, sendButton: HTMLButtonElement): Unit = {
     joinButton.disabled = true
     val playground = dom.document.getElementById("playground")
     playground.innerHTML = s"Trying to join chat as '$name'..."
     val chat = new WebSocket(getWebsocketUri(dom.document, name))
     chat.onopen = { (event: Event) =>
-      playground.insertBefore(p("Chat connection was successful!"), playground.firstChild)
+      playground.insertBefore(
+        p("Chat connection was successful!"),
+        playground.firstChild
+      )
       sendButton.disabled = false
 
-      val messageField = dom.document.getElementById("message").asInstanceOf[HTMLInputElement]
+      val messageField =
+        dom.document.getElementById("message").asInstanceOf[HTMLInputElement]
       messageField.focus()
       messageField.onkeypress = { (event: KeyboardEvent) =>
         if (event.keyCode == 13) {
@@ -46,7 +52,7 @@ val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElem
           event.preventDefault()
         }
       }
-      
+
       sendButton.onclick = { (event: Event) =>
         chat.send(messageField.value)
         messageField.value = ""
@@ -57,7 +63,10 @@ val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElem
       event
     }
     chat.onerror = { (event: Event) =>
-      playground.insertBefore(p(s"Failed: code: ${event.asInstanceOf[ErrorEvent].colno}"), playground.firstChild)
+      playground.insertBefore(
+        p(s"Failed: code: ${event.asInstanceOf[ErrorEvent].colno}"),
+        playground.firstChild
+      )
       joinButton.disabled = false
       sendButton.disabled = true
     }
@@ -65,13 +74,17 @@ val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElem
       val wsMsg = read[Protocol.Message](event.data.toString)
 
       wsMsg match {
-        case Protocol.ChatMessage(sender, message) => writeToArea(s"$sender said: $message")
-        case Protocol.Joined(member, _)            => writeToArea(s"$member joined!")
-        case Protocol.Left(member, _)              => writeToArea(s"$member left!")
+        case Protocol.ChatMessage(sender, message) =>
+          writeToArea(s"$sender said: $message")
+        case Protocol.Joined(member, _) => writeToArea(s"$member joined!")
+        case Protocol.Left(member, _)   => writeToArea(s"$member left!")
       }
     }
     chat.onclose = { (event: Event) =>
-      playground.insertBefore(p("Connection to chat lost. You can try to rejoin manually."), playground.firstChild)
+      playground.insertBefore(
+        p("Connection to chat lost. You can try to rejoin manually."),
+        playground.firstChild
+      )
       joinButton.disabled = false
       sendButton.disabled = true
     }
@@ -80,8 +93,12 @@ val sendButton = dom.document.getElementById("send").asInstanceOf[HTMLButtonElem
       playground.insertBefore(p(text), playground.firstChild)
   }
 
-  def getWebsocketUri(document: Document, nameOfChatParticipant: String): String = {
-    val wsProtocol = if (dom.document.location.protocol == "https:") "wss" else "ws"
+  def getWebsocketUri(
+      document: Document,
+      nameOfChatParticipant: String
+  ): String = {
+    val wsProtocol =
+      if (dom.document.location.protocol == "https:") "wss" else "ws"
 
     s"$wsProtocol://${dom.document.location.host}/connect/$nameOfChatParticipant"
   }

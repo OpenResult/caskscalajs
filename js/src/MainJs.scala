@@ -10,7 +10,7 @@ import shared.Protocol
 @JSExportTopLevel("MainScalaJs")
 object MainScalaJs {
   @JSExport
-  def start(): Unit = {
+  def start(): Unit =
     val sendButton =
       dom.document.getElementById("send").asInstanceOf[HTMLButtonElement]
     val joinButton =
@@ -29,13 +29,16 @@ object MainScalaJs {
         event.preventDefault()
       }
     }
-  }
 
-  def joinChat(name: String, joinButton: HTMLButtonElement, sendButton: HTMLButtonElement): Unit = {
+  def joinChat(
+      name: String,
+      joinButton: HTMLButtonElement,
+      sendButton: HTMLButtonElement
+  ): Unit = {
     joinButton.disabled = true
     val playground = dom.document.getElementById("playground")
     playground.innerHTML = s"Trying to join chat as '$name'..."
-    val chat = new WebSocket(getWebsocketUri(dom.document, name))
+    val chat = new dom.WebSocket(getWebsocketUri(dom.document, name))
     chat.onopen = { (event: Event) =>
       playground.insertBefore(
         p("Chat connection was successful!"),

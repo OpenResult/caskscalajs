@@ -26,6 +26,10 @@ object server extends Common {
   override def compile =
     T {
       js.fastOpt.apply()
+      val from = os.pwd / "out" / "js" / "fastOpt" / "dest"
+      val to = os.pwd / "vuegui" / "dist"
+      os.copy(from / "out.js", to / "out.js")
+      os.copy(from / "out.js.map", to / "out.js.map")
       vuegui.npmRunBuild.apply()
       super.compile.apply()
     }
@@ -35,12 +39,14 @@ object vuegui extends Module with TaskModule {
   override def defaultCommandName(): String = "npmRunBuild"
   def npmRunBuild() = T.command {
     val wd = os.pwd / 'vuegui
-    val invoked = os.proc("npm", "run", "build").call(cwd = wd)
+    val invoked = os.proc("npm", "run", "generate").call(cwd = wd)
     println(invoked.out.trim)
   }
   def sources = T.sources(
     millSourcePath / "src",
-    millSourcePath / "public"
+    millSourcePath / "public",
+    millSourcePath / "pages",
+    millSourcePath / "components"
   )
 }
 

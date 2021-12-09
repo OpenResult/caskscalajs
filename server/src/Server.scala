@@ -21,19 +21,38 @@ object WebServer extends cask.Main {
 case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     extends cask.Routes {
 
+  // hack to make cask serve the index.html page if browser requests subfolder /htm/about
+  // fix this properly in nginx reverse proxy
+  @cask.get("/htm", subpath = true)
+  def pathWithDefaultPage(request: cask.Request) = {
+    val filePath: String =
+      if request.remainingPathSegments.isEmpty ||
+        (!request.remainingPathSegments.last.endsWith(".js") &&
+        !request.remainingPathSegments.last.endsWith(".js.map"))
+      then "./vuegui/dist/index.html"
+      else "./vuegui/dist/" + request.remainingPathSegments.mkString("/")
+      end if
+
+    if filePath.endsWith(".js") then
+      val headers = Seq("Content-Type" -> "text/javascript")
+      cask.model.StaticFile(filePath, headers)
+    else if filePath.endsWith(".js.map") then
+      val headers = Seq("Content-Type" -> "application/json")
+      cask.model.StaticFile(filePath, headers)
+    else if filePath.endsWith(".html") then
+      val headers = Seq("Content-Type" -> "text/html")
+      cask.model.StaticFile(filePath, headers)
+    else
+      val headers = Seq()
+      cask.model.StaticFile(filePath, headers)
+
+  }
+
   @cask.staticFiles(
     "/js/scala",
     headers = Seq("Content-Type" -> "text/javascript")
   )
   def staticFiles() = "out/js/fastOpt/dest"
-
-  @cask.get("/")
-  def index() = {
-    cask.Redirect("/htm/index.html")
-  }
-
-  @cask.staticFiles("/htm")
-  def staticFileRoutes() = "../vuegui/dist/"
 
   @cask.websocket("/connect/:userName")
   def connect(userName: String): cask.WebsocketResult = {

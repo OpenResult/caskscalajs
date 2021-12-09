@@ -1,4 +1,6 @@
 <template>
+<div>
+  <div><Nav></div>
   <div class="chat">
     <form action="#">
       <label for="name">Name: </label><input id="name" type="text" />
@@ -13,6 +15,7 @@
 
     <div id="playground" />
   </div>
+</div>
 </template>
 
 <script>
@@ -22,9 +25,8 @@ export default {
     msg: String
   },
   mounted: function() {
-    var MainScalaJs = require("MainScalaJs");
-
-    MainScalaJs.start();
+    var main = MainScalaJs
+    main.start()
   }
 };
 </script>

@@ -3,9 +3,9 @@ import mill.scalalib._
 import mill.scalajslib._
 import mill.define.TaskModule
 
-val utestVersion = "0.7.10"
-val upickle = "1.4.2"
-val sv = "3.0.2"
+val utestVersion = "0.8.1"
+val upickle = "2.0.0"
+val sv = "3.2.1"
 
 trait Common extends ScalaModule {
   def scalaVersion = sv
@@ -18,7 +18,7 @@ trait Common extends ScalaModule {
 
 object server extends Common {
   def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"com.lihaoyi::cask:0.8.0"
+    ivy"com.lihaoyi::cask:0.8.3"
   )
   override def sources = T.sources {
     super.sources() ++ vuegui.sources()
@@ -26,7 +26,7 @@ object server extends Common {
   override def compile =
     T {
       js.fastOpt.apply()
-      val from = os.pwd / "out" / "js" / "fastOpt" / "dest"
+      val from = os.pwd / "out" / "js" / "fastOpt.dest"
       val to = os.pwd / "vuegui" / "dist"
       os.copy(from / "out.js", to / "out.js")
       os.copy(from / "out.js.map", to / "out.js.map")
@@ -51,8 +51,8 @@ object vuegui extends Module with TaskModule {
 }
 
 object js extends ScalaJSModule with Common {
-  def scalaJSVersion = "1.7.1"
+  def scalaJSVersion = "1.12.0"
   def ivyDeps = super.ivyDeps() ++ Agg(
-    ivy"org.scala-js::scalajs-dom::2.0.0"
+    ivy"org.scala-js::scalajs-dom::2.3.0"
   )
 }

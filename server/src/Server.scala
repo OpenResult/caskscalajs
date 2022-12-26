@@ -52,7 +52,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     "/js/scala",
     headers = Seq("Content-Type" -> "text/javascript")
   )
-  def staticFiles() = "out/js/fastOpt/dest"
+  def staticFiles() = "out/js/fastOpt.dest"
 
   @cask.websocket("/connect/:userName")
   def connect(userName: String): cask.WebsocketResult = {

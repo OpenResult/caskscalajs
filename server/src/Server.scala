@@ -20,6 +20,9 @@ object WebServer extends cask.Main {
 
 case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     extends cask.Routes {
+  @cask.get("/")
+  def redirect() =
+    cask.model.Redirect("/htm")
 
   // hack to make cask serve the index.html page if browser requests subfolder /htm/about
   // fix this properly in nginx reverse proxy
@@ -27,7 +30,8 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
   def pathWithDefaultPage(request: cask.Request) = {
     val filePath: String =
       if request.remainingPathSegments.isEmpty ||
-        (!request.remainingPathSegments.last.endsWith(".js") &&
+        (!request.remainingPathSegments.last.endsWith(".css") &&
+        !request.remainingPathSegments.last.endsWith(".js") &&
         !request.remainingPathSegments.last.endsWith(".js.map"))
       then "./vuegui/dist/index.html"
       else "./vuegui/dist/" + request.remainingPathSegments.mkString("/")
@@ -38,6 +42,9 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
       cask.model.StaticFile(filePath, headers)
     else if filePath.endsWith(".js.map") then
       val headers = Seq("Content-Type" -> "application/json")
+      cask.model.StaticFile(filePath, headers)
+    else if filePath.endsWith(".css") then
+      val headers = Seq("Content-Type" -> "text/css")
       cask.model.StaticFile(filePath, headers)
     else if filePath.endsWith(".html") then
       val headers = Seq("Content-Type" -> "text/html")

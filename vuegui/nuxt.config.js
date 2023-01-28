@@ -6,24 +6,6 @@ export default {
   target: 'static',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'vuegui',
-    htmlAttrs: {
-      lang: 'en'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ],
-    script: [
-      { hid: 'MainScalaJs', src: '/js/scala/out.js', defer: true }
-    ]
-  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -47,7 +29,25 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
-  router: {
-    base: '/htm/'
+  app: {
+    baseURL: '/htm',
+    head: {
+      title: 'vuegui',
+      htmlAttrs: {
+        lang: 'en'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: '' },
+        { name: 'format-detection', content: 'telephone=no' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ],
+      script: [
+        { hid: 'MainScalaJs', src: '/js/scala/out.js', defer: true }
+      ]
+    },
   }
 }

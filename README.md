@@ -11,6 +11,6 @@ Now using:
 Currently needs initial `npm install` in vuegui folder.
 Set up for development, use: `mill -w server.runBackground`
 
-`http://localhost:8384/htm/`
+`http://localhost:8384/`
 
 Cask file serving has a nasty [hack](server/src/Server.scala) to be able to serve a default page required by vuejs routing. This would be handled by reverseproxy (eg nginx) in production scenario.

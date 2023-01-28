@@ -26,10 +26,6 @@ object server extends Common {
   override def compile =
     T {
       js.fastOpt.apply()
-      val from = os.pwd / "out" / "js" / "fastOpt.dest"
-      val to = os.pwd / "vuegui" / "dist"
-      os.copy(from / "out.js", to / "out.js")
-      os.copy(from / "out.js.map", to / "out.js.map")
       vuegui.npmRunBuild.apply()
       super.compile.apply()
     }
